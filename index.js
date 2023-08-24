@@ -25,7 +25,22 @@ const bodyParser = require('body-parser');
  */
 const jsonServer = require('json-server');
 
-//
+// ------------------ VARIABLES ------------------ //
+/**
+ * Le Middleware est un terme générique qui désigne une fonction qui va être exécutée entre la requête et la réponse.
+ * C'est une fonction qui va être exécutée à chaque fois qu'une requête est reçue par le serveur.
+ * jsm est juste un nom de variable, on aurait pu l'appeler comme on voulait.
+ */
+const jsm = jsonServer.router('db.json');
+
+/**
+ * Ici, on crée une application Express qui va utiliser le Middleware json-server.
+ * Cela signifie que toutes les requêtes reçues par notre serveur seront traitées par le Middleware json-server.
+ */
 const app = express();
+
+app.get('/martin',(req,res)=>{
+    res.send('Coucou martin')
+})
 
 app.listen(3000, () => console.log('Le serveur est lancé sur le port 3000'));
