@@ -93,6 +93,17 @@ app.post('/tasks/create', (req, res) => {
     res.redirect('/tasks'); // On redirige l'internaute vers la page des tâches.
 });
 
+/**
+ * Supprimer une tâche en fonction de son id.
+ * On va supprimer la tâche dans le fichier JSON.
+ */
+app.get('/tasks/delete/:id', (req, res) => { // On définit la route "/tasks/delete/:id".
+    const tasks = JSON.parse(fs.readFileSync('db.json')).tasks; // On récupère les tâches dans le fichier JSON.
+    const newTasks = tasks.filter(task => task.id !== parseInt(req.params.id)); // On filtre les tâches pour ne garder que les tâches dont l'id est différent de l'id de la tâche à supprimer.
+    fs.writeFileSync('db.json', JSON.stringify({ tasks: newTasks })); // On enregistre les tâches dans le fichier JSON.
+    res.redirect('/tasks'); // On redirige l'internaute vers la page des tâches.
+});
+
 
 
 
