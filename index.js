@@ -39,8 +39,71 @@ const jsm = jsonServer.router('db.json');
  */
 const app = express();
 
-app.get('/martin',(req,res)=>{
-    res.send('Coucou martin')
+// ------------------ APP USE AND SET ------------------ //
+
+/** 
+ * Ici, urlencoded() est une méthode qui permet de traiter les données reçues dans les requêtes.
+ * On indique "extended: false" pour indiquer que l'on ne veut pas traiter les données reçues dans les requêtes comme des objets complexes.
+ */
+app.use(bodyParser.urlencoded({ extended: false })); 
+
+/**
+ * Ici, json() est une méthode qui permet de traiter les données reçues dans les requêtes.
+ * Cela permet de traiter les données reçues dans les requêtes au format JSON.
+ */
+app.use(bodyParser.json()); 
+
+/**
+ * Ici, on indique que l'on veut utiliser le Middleware json-server pour toutes les requêtes reçues sur la route "/api".
+ * Cela signifie que toutes les requêtes reçues sur la route "/api" seront traitées par le Middleware json-server.
+ */
+app.use('/api', jsm); 
+
+/**
+ * On définit le moteur de template que l'on va utiliser.
+ * Ici, on va utiliser le moteur de template EJS. 
+ */
+app.set('view engine', 'ejs');
+
+
+
+// ------------------ ROUTES ------------------ //
+
+/**
+ * Lorsqu'un internaute accède à la route "/", on va le rediriger vers la route "/tasks".
+ */
+app.get('/', (req, res) => {
+    res.redirect('/tasks');
+});
+
+/**
+ * Création d'une nouvelle tâche.
+ * On va créer une nouvelle tâche dans le fichier JSON.
+ */
+app.post('/tasks/create', (req, res) => {
+    const tasks = JSON.parse(fs.readFileSync('db.json')).tasks; // On récupère les tâches dans le fichier JSON.
+    const newTask = { // On crée une nouvelle tâche.
+        id: Date.now(), // On génère un id unique pour la nouvelle tâche.
+        title: req.body.title, // On récupère le titre de la nouvelle tâche.
+        description: req.body.description, // On récupère la description de la nouvelle tâche.
+        status: req.body.status, // On récupère le statut de la nouvelle tâche.
+    };
+    tasks.push(newTask); // On ajoute la nouvelle tâche dans le tableau des tâches.
+    fs.writeFileSync('db.json', JSON.stringify({ tasks })); // On enregistre les tâches dans le fichier JSON.
+    res.redirect('/tasks'); // On redirige l'internaute vers la page des tâches.
+});
+
+
+
+
+
+
+
+app.get('/tasks',(req,res)=>{
+    const tasks = JSON.parse(fs.readFileSync('db.json')).tasks; // On récupère les tâches dans le fichier JSON.
+    res.render('tasks', { tasks }); // On retourne la vue "tasks.ejs" en lui passant les tâches en paramètre.
+    //pour le test : relancer avec npm start , affiche le résultat dans le terminal 
+    console.log(tasks)
 })
 
 app.listen(3000, () => console.log('Le serveur est lancé sur le port 3000'));
