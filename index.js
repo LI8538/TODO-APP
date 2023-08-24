@@ -112,7 +112,8 @@ app.get('/tasks/delete/:id', (req, res) => { // On définit la route "/tasks/del
 
 app.get('/tasks',(req,res)=>{
     const tasks = JSON.parse(fs.readFileSync('db.json')).tasks; // On récupère les tâches dans le fichier JSON.
-    res.render('tasks', { tasks }); // On retourne la vue "tasks.ejs" en lui passant les tâches en paramètre.
+    let message = '';
+    res.render('tasks', { tasks, message }); // On retourne la vue "tasks.ejs" en lui passant les tâches en paramètre.
     //pour le test : relancer avec npm start , affiche le résultat dans le terminal 
     console.log(tasks)
 })
